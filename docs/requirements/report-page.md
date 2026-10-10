@@ -1,7 +1,7 @@
 # Report page — requirements
 
 ## Problem
-<!-- TODO(you, task 5): one or two sentences — what does the user not know without this page? -->
+This page allows a user to see the progress of the conversion. Without this page, a user does not know what songs from spotify was successfully transferred and what was not and whether the transferred songs are the right ones
 
 ## User stories
 1. As a user, I want to see how many songs were matched, unsure, and not found, so that I can see the remaining songs left to port, the amount of songs matched, unsured and not foound.
@@ -18,12 +18,12 @@
 ## Acceptance criteria
 
 ### Tiles (top of the page)
-- Matched, unsure, not found and remaining are displayed as tiles at the top of the screen.
+- Matched, unsure, not found and remaining are displayed as tiles at the top of the screen. Tiles are cards that display information. They are bordered. They store a single piece of infomration. Shows a number with text. Number, should be bold, in the center of the card. Tiles are to be displayed next to each other in a row
 - The matched, unsure, and not found tiles each show the same number as the count of songs listed in that section of the page.
 - Remaining = the number of pending songs (the same as total liked songs − matched − unsure − not found, e.g. 1000 − 150 − 30 − 15 = 805).
 
 ### Sections (all lists)
-- Matched, unsure ("Not liked yet"), not found, and pending songs are each listed under their own heading.
+- Matched, unsure ("Not liked yet"), and not-found songs are each listed under their own heading. Pending songs are split across two headings, "Next batch" and "Later" (see Still to transfer).
 - Matched, unsure, and not-found songs are ordered by when the app checked them (`checkedAt`), newest at the top, oldest at the bottom.
 
 ### Matched

@@ -3,6 +3,15 @@ import "./App.css";
 
 const BATCH_SIZE = 65;
 
+function Tile ({label, count}) {
+  return (
+    <div className="tile">
+      <p>{count}</p>
+      <p>{label}</p>
+    </div>
+  )
+}
+
 function App() {
   const pending = fakeSongs.filter((song) => song.status === "pending");
   const matched = fakeSongs.filter((song) => song.status === "matched");
@@ -28,12 +37,15 @@ function App() {
   const nextBatch = sortedPending.slice(0, BATCH_SIZE);
   const later = sortedPending.slice(BATCH_SIZE);
 
+
   return (
     <>
-      <p>Matched: {matched.length}</p>
-      <p>Not liked yet: {unsure.length}</p>
-      <p>Not found: {notFound.length}</p>
-      <p>Remaining: {pending.length}</p>
+      <div className="tiles">
+        <Tile label="Matched" count={matched.length} />
+        <Tile label="Not liked yet" count={unsure.length} />
+        <Tile label="Not Found" count={notFound.length} />
+        <Tile label="Remaining" count={pending.length} />
+      </div>
 
       <h2>Matched</h2>
       {sortedMatched.map((song) => (
