@@ -1,122 +1,95 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { fakeSongs } from "./fakeSongs";
+import "./App.css";
+
+const BATCH_SIZE = 65;
 
 function App() {
-  const [count, setCount] = useState(0)
+  const pending = fakeSongs.filter((song) => song.status === "pending");
+  const matched = fakeSongs.filter((song) => song.status === "matched");
+  const unsure = fakeSongs.filter((song) => song.status === "unsure");
+  const notFound = fakeSongs.filter((song) => song.status === "not_found");
+
+  const sortedMatched = [...matched].sort((a, b) =>
+    b.checkedAt.localeCompare(a.checkedAt),
+  );
+
+  const sortedUnsure = [...unsure].sort((a, b) =>
+    b.checkedAt.localeCompare(a.checkedAt),
+  );
+
+  const sortedNotFound = [...notFound].sort((a, b) =>
+    b.checkedAt.localeCompare(a.checkedAt),
+  );
+
+  const sortedPending = [...pending].sort((a, b) =>
+    a.addedAt.localeCompare(b.addedAt),
+  );
+
+  const nextBatch = sortedPending.slice(0, BATCH_SIZE);
+  const later = sortedPending.slice(BATCH_SIZE);
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>MySong repot</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <p>Matched: {matched.length}</p>
+      <p>Not liked yet: {unsure.length}</p>
+      <p>Not found: {notFound.length}</p>
+      <p>Remaining: {pending.length}</p>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <h2>Matched</h2>
+      {sortedMatched.map((song) => (
+        <div key={song.id}>
+          <a href={song.ytUrl}>{song.ytTitle}</a>
+          <p>{song.ytChannel}</p>
+          <small>
+            {song.spotifyTitle} by {song.spotifyArtist}
+          </small>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      ))}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <h2>Not liked yet (Unsure)</h2>
+      {sortedUnsure.map((song) => (
+        <div key={song.id}>
+          <a href={song.ytUrl}>{song.ytTitle}</a>
+          <p>{song.ytChannel}</p>
+          <small>
+            {song.spotifyTitle} by {song.spotifyArtist}
+          </small>
+        </div>
+      ))}
+
+      <h2>Not Found</h2>
+      {sortedNotFound.map((song) => (
+        <div key={song.id}>
+          <small>
+            {song.spotifyTitle} by {song.spotifyArtist}
+          </small>
+        </div>
+      ))}
+
+      <h2>Next batch</h2>
+      {nextBatch.map((song) => (
+        <div key={song.id}>
+          <small>
+            {song.spotifyTitle} by {song.spotifyArtist}
+          </small>
+        </div>
+      ))}
+
+      {later.length > 0 && (
+        <>
+          <h2>Later</h2>
+
+          {later.map((song) => (
+            <div key={song.id}>
+              <small>
+                {song.spotifyTitle} by {song.spotifyArtist}
+              </small>
+            </div>
+          ))}
+        </>
+      )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
