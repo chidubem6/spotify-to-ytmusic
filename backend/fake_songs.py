@@ -1,4 +1,4 @@
-# The same 10 fake songs as frontend/src/fakeSongs.js, written in Python.
+# 10 fake songs covering all four statuses, served by GET /api/songs.
 # Replaced by a real database in section 3.
 fake_songs = [
     {

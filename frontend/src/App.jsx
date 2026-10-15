@@ -1,4 +1,4 @@
-import { fakeSongs } from "./fakeSongs";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 const BATCH_SIZE = 65;
@@ -13,10 +13,22 @@ function Tile ({label, count}) {
 }
 
 function App() {
-  const pending = fakeSongs.filter((song) => song.status === "pending");
-  const matched = fakeSongs.filter((song) => song.status === "matched");
-  const unsure = fakeSongs.filter((song) => song.status === "unsure");
-  const notFound = fakeSongs.filter((song) => song.status === "not_found");
+  const [songs, setSongs] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/songs")
+      .then((response) => response.json())
+      .then((data) => setSongs(data));
+  }, []);
+
+  if (songs === null) {
+    return <p>Loading songs…</p>;
+  }
+
+  const pending = songs.filter((song) => song.status === "pending");
+  const matched = songs.filter((song) => song.status === "matched");
+  const unsure = songs.filter((song) => song.status === "unsure");
+  const notFound = songs.filter((song) => song.status === "not_found");
 
   const sortedMatched = [...matched].sort((a, b) =>
     b.checkedAt.localeCompare(a.checkedAt),
