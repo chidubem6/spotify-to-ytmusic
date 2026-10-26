@@ -12,11 +12,11 @@ Right now the React page can only show songs hardcoded in `fakeSongs.js`. It has
 ## Acceptance criteria
 
 ### The page gets its songs from the API (story 1)
-- `frontend/src/fakeSongs.js` is deleted, and the report page still shows the same 10 songs, with the same tile counts and the same sections, as before the change.
+- `frontend/src/fakeSongs.js` (last version in commit `cac17aa`) is deleted, and the report page still shows the same 10 songs, with the same tile counts and the same sections, as before the change. To see the old file: `git show cac17aa:frontend/src/fakeSongs.js`.
 
 ### The endpoint works on its own (story 2)
 - On FastAPI's `/docs` page, calling `GET /api/songs` returns all 10 songs as JSON.
-- Every song has the same fields as `fakeSongs.js`: `id`, `status`, `checkedAt`, `addedAt`, `spotifyTitle`, `spotifyArtist`, `ytTitle`, `ytChannel`, `ytUrl`, with the same values.
+- Every song has the same fields as `fakeSongs.js` (commit `cac17aa`): `id`, `status`, `checkedAt`, `addedAt`, `spotifyTitle`, `spotifyArtist`, `ytTitle`, `ytChannel`, `ytUrl`, with the same values.
 
 ## Not in this section (built elsewhere)
 - Real Spotify songs and logging in: section 4 (`login.md`).
