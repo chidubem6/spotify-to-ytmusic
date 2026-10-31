@@ -1,3 +1,4 @@
 # Packages this backend needs. Rebuild the venv on any machine with:
 #   pip install -r requirements.txt
 fastapi[standard]==0.143.1
+python-dotenv==1.2.4
