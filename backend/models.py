@@ -21,3 +21,13 @@ class Song(Base):
     yt_title: Mapped[str | None]
     yt_channel: Mapped[str | None]
     yt_url: Mapped[str | None]
+
+
+# One LoginSession object = one logged-in browser (see sql/create_sessions.sql).
+# Not called "Session": that name is already SQLAlchemy's database workspace.
+class LoginSession(Base):
+    __tablename__ = "sessions"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    access_token: Mapped[str]
+    expires_at: Mapped[datetime]
