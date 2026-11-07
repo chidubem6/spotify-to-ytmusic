@@ -1,4 +1,8 @@
+import os
+from urllib.parse import urlencode
+
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -31,4 +35,21 @@ def get_songs():
         for song in songs:
             json_songs.append(song_to_json(song))
         return json_songs
-            
+
+
+@app.get("/api/login")
+def login():
+    # Everything Spotify needs to show the consent page, as key: value pairs.
+    params = {
+        "client_id": os.getenv("SPOTIFY_CLIENT_ID"),
+        "response_type": "code",
+        "redirect_uri": os.getenv("SPOTIFY_REDIRECT_URI"),
+        "scope": "user-library-read",
+    }
+    url = "https://accounts.spotify.com/authorize?" + urlencode(params)
+    return RedirectResponse(url)
+
+
+@app.get("/api/callback")
+def callback(code: str):
+    return {"code": code}
