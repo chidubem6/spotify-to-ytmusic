@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 import httpx
 from fastapi import Cookie, FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from database import engine
@@ -53,6 +53,33 @@ def login():
     return RedirectResponse(url)
 
 
+def fetch_liked_songs(access_token):
+    # Page 1. 50 is the most Spotify will send per page.
+    url = "https://api.spotify.com/v1/me/tracks?limit=50"
+    items = []
+    # None (JSON null) counts as false, so the loop stops after the last page.
+    while url:
+        response = httpx.get(url, headers={"Authorization": "Bearer " + access_token})
+        page = response.json()
+        items.extend(page["items"])  # add this page's songs to the pile
+        url = page["next"]  # the next page's address, or None on the last page
+    return items
+
+
+def item_to_song(item):
+    # One Spotify item -> one Song row (a brand-new, not-yet-matched song).
+    track = item["track"]
+    artist_names = []
+    for artist in track["artists"]:
+        artist_names.append(artist["name"])
+    return Song(
+        added_at=datetime.fromisoformat(item["added_at"]),
+        status="pending",
+        spotify_title=track["name"],
+        spotify_artist=", ".join(artist_names),
+    )
+
+
 @app.get("/api/callback")
 def callback(code: str):
     # Trade the one-time code for a token. Python asks Spotify directly,
@@ -81,6 +108,14 @@ def callback(code: str):
     with Session(engine) as session:
         session.add(LoginSession(id=session_id, access_token=token_data["access_token"], expires_at=expires_at))
         session.commit()
+
+    # Replace the songs table with this user's liked songs (decision 19).
+    items = fetch_liked_songs(token_data["access_token"])
+    with Session(engine) as session:
+        session.execute(delete(Song))  # DELETE FROM songs, no WHERE: every row
+        for item in items:
+            session.add(item_to_song(item))
+        session.commit()  # the wipe and every insert land together, or not at all
 
     # Send the browser home, carrying its claim ticket in a cookie.
     redirect = RedirectResponse("/")
