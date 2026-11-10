@@ -61,6 +61,11 @@ def fetch_liked_songs(access_token):
     while url:
         response = httpx.get(url, headers={"Authorization": "Bearer " + access_token})
         page = response.json()
+        if "items" not in page:
+            print(page, response.status_code, response.headers.get("retry-after"))
+            retry_seconds = int(response.headers.get("retry-after"))
+            retry_minutes = round(retry_seconds / 60)
+            raise HTTPException(503, "Spotify is busy - try again in about " + str(retry_minutes) + " minutes")
         items.extend(page["items"])  # add this page's songs to the pile
         url = page["next"]  # the next page's address, or None on the last page
     return items

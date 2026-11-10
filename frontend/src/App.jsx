@@ -52,6 +52,8 @@ function App() {
 
   return (
     <>
+      <a href="/api/login">Log in with Spotify</a>
+
       <div className="tiles">
         <Tile label="Matched" count={matched.length} />
         <Tile label="Not liked yet" count={unsure.length} />
