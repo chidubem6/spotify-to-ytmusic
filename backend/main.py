@@ -68,6 +68,8 @@ def fetch_liked_songs(access_token):
             raise HTTPException(503, "Spotify is busy - try again in about " + str(retry_minutes) + " minutes")
         items.extend(page["items"])  # add this page's songs to the pile
         url = page["next"]  # the next page's address, or None on the last page
+    print(page["total"])
+    print(len(items))
     return items
 
 
